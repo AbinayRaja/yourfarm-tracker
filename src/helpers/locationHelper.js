@@ -99,7 +99,7 @@ export const startTracking = (
     } catch (err) {
       console.log('Track location failed:', err);
     }
-  }, 4 * 60 * 1000); // ← 4 minutes — change to 2*60*1000 or 5*60*1000 as needed
+  }, 4 * 60 * 1000); 
 
   return () => {
     if (trackingInterval) {

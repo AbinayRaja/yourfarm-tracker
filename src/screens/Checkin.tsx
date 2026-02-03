@@ -84,7 +84,7 @@ const Checkin = ({ route }) => {
           setLastCheckIn(checkIn);
           setLastCheckOut(null);
           setSessionStats(null);
-          setTrackPoints([]); // reset tracks on reload
+          setTrackPoints([]); 
         }
       }
     } catch (e) {
@@ -99,7 +99,7 @@ const Checkin = ({ route }) => {
       if (json) history = JSON.parse(json);
 
       history.push(record);
-      if (history.length > 60) history = history.slice(-60); // allow more for track points
+      if (history.length > 60) history = history.slice(-60); 
 
       await AsyncStorage.setItem(CHECKIN_HISTORY_KEY, JSON.stringify(history));
 
@@ -156,7 +156,6 @@ const Checkin = ({ route }) => {
       await saveCheckRecord(newRecord);
 
       if (action === 'check-in') {
-        // Start periodic tracking
         const stopFn = startTracking((newCoords, ts) => {
           const trackRec: CheckRecord = {
             type: 'track',
@@ -167,7 +166,6 @@ const Checkin = ({ route }) => {
             },
           };
           setTrackPoints((prev) => [...prev, trackRec]);
-          // Optional: saveCheckRecord(trackRec); // if you want them in history
         });
 
         stopTrackingRef.current = stopFn;
@@ -177,7 +175,6 @@ const Checkin = ({ route }) => {
           `📍 ${fullAddress}\n\n${new Date().toLocaleString('en-IN')}`
         );
       } else {
-        // Check-out → stop tracking & calculate total distance
         if (stopTrackingRef.current) {
           stopTrackingRef.current();
           stopTrackingRef.current = null;
@@ -297,31 +294,31 @@ const Checkin = ({ route }) => {
                   📍 {lastCheckOut.address || 'Location not available'}
                 </Text>
 
-               
+
               </View>
             )}
-             {sessionStats && (
-                  <View
-                      style={{
-                marginVertical: 12,
-                padding: 12,
-                backgroundColor: '#baddf2',
-                borderRadius: 8,
-                borderWidth: 1,
-                borderColor: '#87cbf5',
-              }}
-                  >
-                    <Text style={{ color: '#1b3a99', fontWeight: '600', fontSize: 15 }}>
-                      Session Summary
-                    </Text>
-                    <Text style={{ color: '#374151', marginTop: 6, fontSize: 14 }}>
-                      ⏱ Duration: {sessionStats.hours} hrs {sessionStats.minutes} min
-                    </Text>
-                    <Text style={{ color: '#374151', marginTop: 4, fontSize: 14 }}>
-                      🛣 Total distance travelled: {sessionStats.distanceKm} km
-                    </Text>
-                  </View>
-                )}
+            {sessionStats && (
+              <View
+                style={{
+                  marginVertical: 12,
+                  padding: 12,
+                  backgroundColor: '#baddf2',
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: '#87cbf5',
+                }}
+              >
+                <Text style={{ color: '#1b3a99', fontWeight: '600', fontSize: 15 }}>
+                  Session Summary
+                </Text>
+                <Text style={{ color: '#374151', marginTop: 6, fontSize: 14 }}>
+                  ⏱ Duration: {sessionStats.hours} hrs {sessionStats.minutes} min
+                </Text>
+                <Text style={{ color: '#374151', marginTop: 4, fontSize: 14 }}>
+                  🛣 Total distance travelled: {sessionStats.distanceKm} km
+                </Text>
+              </View>
+            )}
 
 
           </>
