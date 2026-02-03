@@ -68,7 +68,7 @@ export const getAddressFromCoords = async (
     }
 
     const json = await response.json();
-console.log(json,'json');
+    console.log(json, 'json');
 
     // const { suburb, city_district, city } = json?.data || {};
 
@@ -76,8 +76,42 @@ console.log(json,'json');
     //   (item) => item && item.trim()
     // );
 
-    return json ; ;
+    return json;;
   } catch {
     return 'Could not fetch address';
+  }
+};
+
+
+let trackingInterval: NodeJS.Timeout | null = null;
+
+export const startTracking = (
+  onNewLocation: (coords: Geolocation.GeoCoordinates, timestamp: string) => void
+): (() => void) => {
+  if (trackingInterval) {
+    clearInterval(trackingInterval);
+  }
+
+  trackingInterval = setInterval(async () => {
+    try {
+      const position = await fetchLocation();
+      onNewLocation(position, new Date().toISOString());
+    } catch (err) {
+      console.log('Track location failed:', err);
+    }
+  }, 4 * 60 * 1000); // ← 4 minutes — change to 2*60*1000 or 5*60*1000 as needed
+
+  return () => {
+    if (trackingInterval) {
+      clearInterval(trackingInterval);
+      trackingInterval = null;
+    }
+  };
+};
+
+export const stopTracking = () => {
+  if (trackingInterval) {
+    clearInterval(trackingInterval);
+    trackingInterval = null;
   }
 };
